@@ -29,8 +29,6 @@ set.seed(123)
 # sigma  ~ half-cauchy(0, 10)
 
 # Load Maths for Business Data
-math = read.csv("math10030_master_forcheck.csv", header=TRUE)
-
 # This data is not provided for ethical reasons.
 
 # Make sure each variable is of correct type
