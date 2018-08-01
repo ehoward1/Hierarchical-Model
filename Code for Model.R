@@ -77,7 +77,7 @@ math_data = with(math,
                       N = nrow(math),
                       x1 = remPercent,
                       x2 = Maths.Points,
-                      Q = 4, # number of groups of quiz groups
+                      Q = 4, # number of quiz mark groups
                       QM = quiz.group))
 
 # Choose the parameters to watch
@@ -109,27 +109,27 @@ model_run.mcmc = as.mcmc(model_run)
 model_run.mat = as.matrix(model_run.mcmc)
 model_run.dat = as.data.frame(model_run.mat)
 model_run.dat = model_run.dat[,5:8]
-coef.vect = apply(model_run.dat, 2, mean)
-lower.vect = apply(model_run.dat, 2, function(x) quantile(x, probs = c(0.025)))
-upper.vect = apply(model_run.dat, 2, function(x) quantile(x, probs = c(0.975)))
-long.names = c("% Remediated (0-2 marks)",
-                "% Remediated (2-3 marks)",
-                "% Remediated (3-4 marks)",
-                "% Remediated (4-5 marks)")
+
+coef = apply(model_run.dat, 2, mean)
+lower = apply(model_run.dat, 2, function(x) quantile(x, probs = c(0.025)))
+upper = apply(model_run.dat, 2, function(x) quantile(x, probs = c(0.975)))
+names = c("% Remediated (0-2 marks)",
+          "% Remediated (2-3 marks)",
+          "% Remediated (3-4 marks)",
+          "% Remediated (4-5 marks)")
 
 # Creating the dataframe to store the values
-plot.dat = data.frame(coef.vect, lower.vect, upper.vect, long.names)[c(1:4), ]
+data = data.frame(coef, lower, upper, names)[c(1:4), ]
 
 # Plotting the values
-ggplot(data = plot.dat, aes(x = coef.vect, y = long.names)) + 
-  geom_point(aes(color="red",size=0.8)) + 
+ggplot(data = data, aes(x = coef, y = names)) + 
+  geom_point(aes(color="red", size=0.8)) + 
   scale_x_continuous(breaks=seq(-0.04, 0.3, 0.04)) + 
   expand_limits(y=c(-0.1,0.3)) +
   theme_bw() +
-  geom_segment(aes(x = lower.vect, xend = upper.vect, y = long.names, yend = long.names)) +
+  geom_segment(aes(x = lower, xend = upper, y = names, yend = names)) +
   geom_vline(xintercept = 0, colour = "blue", linetype = 2) + 
   xlab("Posterior Estimates for the Coefficient of Percentage Remediated") + 
-  ylab("Coefficient\nfor\nExplanatory\nVariable") +
   ylab('Posterior\nPredicted\nValues') +
   theme(
     plot.title = element_text(lineheight=0, face="bold",size=13),
